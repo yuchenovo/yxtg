@@ -23,7 +23,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/product/category")
-@CrossOrigin
 public class CategoryController {
 
     @Autowired

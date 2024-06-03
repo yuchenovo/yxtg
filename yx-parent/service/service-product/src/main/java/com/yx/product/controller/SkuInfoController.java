@@ -24,7 +24,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/product/skuInfo")
-@CrossOrigin
 public class SkuInfoController {
 
     @Autowired
@@ -79,7 +78,7 @@ public class SkuInfoController {
     @ApiOperation(value = "删除")
     @DeleteMapping("remove/{id}")
     public Result remove(@PathVariable Long id) {
-        skuInfoService.removeById(id);
+        skuInfoService.removeSku(id);
         return Result.ok(null);
     }
 

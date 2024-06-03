@@ -23,7 +23,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/product/attrGroup")
-@CrossOrigin
 public class AttrGroupController {
 
     @Autowired

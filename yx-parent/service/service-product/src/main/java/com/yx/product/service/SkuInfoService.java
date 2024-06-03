@@ -7,6 +7,8 @@ import com.yx.model.product.SkuInfo;
 import com.yx.vo.product.SkuInfoQueryVo;
 import com.yx.vo.product.SkuInfoVo;
 
+import java.util.List;
+
 /**
  * <p>
  * sku信息 服务类
@@ -36,4 +38,10 @@ public interface SkuInfoService extends IService<SkuInfo> {
     SkuInfoVo getSkuInfo(Long id);
 
     void updateSkuInfo(SkuInfoVo skuInfoVo);
+
+    void removeSku(Long id);
+
+    List<SkuInfo> findSkuInfoList(List<Long> skuIdList);
+
+    List<SkuInfo> findSkuInfoByKeyword(String keyword);
 }

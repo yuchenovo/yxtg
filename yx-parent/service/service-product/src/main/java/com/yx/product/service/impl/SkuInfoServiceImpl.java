@@ -9,6 +9,8 @@ import com.yx.model.product.SkuAttrValue;
 import com.yx.model.product.SkuImage;
 import com.yx.model.product.SkuInfo;
 import com.yx.model.product.SkuPoster;
+import com.yx.mq.constant.MqConst;
+import com.yx.mq.service.RabbitService;
 import com.yx.product.mapper.SkuInfoMapper;
 import com.yx.product.service.SkuAttrValueService;
 import com.yx.product.service.SkuImageService;
@@ -42,6 +44,8 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
     private SkuImageService skuImageService;
     @Autowired
     private SkuPosterService skuPosterService;
+    @Autowired
+    private RabbitService rabbitService;
 
     @Override
     public IPage<SkuInfo> selectPageSkuInfo(Page<SkuInfo> pageParam, SkuInfoQueryVo skuInfoQueryVo) {
@@ -88,6 +92,24 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
         saveSkuList(skuInfoVo, skuInfo);
     }
 
+    @Override
+    public void removeSku(Long id) {
+        removeById(id);
+        rabbitService.sendMessage(MqConst.EXCHANGE_GOODS_DIRECT,MqConst.ROUTING_GOODS_LOWER,id);
+    }
+
+    @Override
+    public List<SkuInfo> findSkuInfoList(List<Long> skuIdList) {
+        return baseMapper.selectBatchIds(skuIdList);
+    }
+
+    @Override
+    public List<SkuInfo> findSkuInfoByKeyword(String keyword) {
+        LambdaQueryWrapper<SkuInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(!StringUtils.isEmpty(keyword),SkuInfo::getSkuName,keyword);
+        return baseMapper.selectList(wrapper);
+    }
+
     private void saveSkuList(SkuInfoVo skuInfoVo, SkuInfo skuInfo) {
         List<SkuImage> skuImagesList = skuInfoVo.getSkuImagesList();
         if (!CollectionUtils.isEmpty(skuImagesList)){
@@ -117,6 +139,13 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
         SkuInfo skuInfo = getById(skuId);
         skuInfo.setPublishStatus(status);
         updateById(skuInfo);
+        //mq发送上下架消息
+        if (status == 1){
+            rabbitService.sendMessage(MqConst.EXCHANGE_GOODS_DIRECT,MqConst.ROUTING_GOODS_UPPER,skuId);
+        } else {
+            rabbitService.sendMessage(MqConst.EXCHANGE_GOODS_DIRECT,MqConst.ROUTING_GOODS_LOWER,skuId);
+        }
+
     }
 
     @Override

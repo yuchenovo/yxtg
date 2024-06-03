@@ -20,7 +20,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/product/attr")
-@CrossOrigin
 public class AttrController {
 
     @Autowired

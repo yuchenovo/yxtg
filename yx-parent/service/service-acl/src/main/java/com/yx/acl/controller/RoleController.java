@@ -22,7 +22,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/acl/role")
 @Api(tags = "角色")
-@CrossOrigin
 public class RoleController {
     @Autowired
     private IRoleService roleService;
