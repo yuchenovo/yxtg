@@ -11,6 +11,7 @@ import com.yx.client.product.ProductFeignClient;
 import com.yx.enums.CouponRangeType;
 import com.yx.model.activity.CouponInfo;
 import com.yx.model.activity.CouponRange;
+import com.yx.model.order.CartInfo;
 import com.yx.model.product.Category;
 import com.yx.model.product.SkuInfo;
 import com.yx.vo.activity.CouponRuleVo;
@@ -116,5 +117,23 @@ public class CouponInfoServiceImpl extends ServiceImpl<CouponInfoMapper, CouponI
             couponRange.setCouponId(couponRuleVo.getCouponId());
             couponRangeService.save(couponRange);
         }
+    }
+
+    @Override
+    public CouponInfo findRangeSkuIdList(List<CartInfo> cartInfoList, Long couponId) {
+        return null;
+    }
+
+    @Override
+    public void updateCouponInfoUseStatus(Long couponId, Long userId, Long orderId) {
+
+    }
+
+    @Override
+    public List<CouponInfo> findCouponInfoList(Long skuId, Long userId) {
+        SkuInfo skuInfo = productFeignClient.getSkuInfo(skuId);
+
+        return baseMapper.selectCouponInfoList(skuInfo.getId(),
+                skuInfo.getCategoryId(),userId);
     }
 }

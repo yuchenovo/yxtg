@@ -8,12 +8,18 @@ import com.yx.activity.mapper.ActivityInfoMapper;
 import com.yx.activity.service.ActivityInfoService;
 import com.yx.activity.service.ActivityRuleService;
 import com.yx.activity.service.ActivitySkuService;
+import com.yx.activity.service.CouponInfoService;
 import com.yx.client.product.ProductFeignClient;
+import com.yx.enums.ActivityType;
 import com.yx.model.activity.ActivityInfo;
 import com.yx.model.activity.ActivityRule;
 import com.yx.model.activity.ActivitySku;
+import com.yx.model.activity.CouponInfo;
+import com.yx.model.order.CartInfo;
 import com.yx.model.product.SkuInfo;
 import com.yx.vo.activity.ActivityRuleVo;
+import com.yx.vo.order.CartInfoVo;
+import com.yx.vo.order.OrderConfirmVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +46,8 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
     private ActivityRuleService activityRuleService;
     @Autowired
     private ActivitySkuService activitySkuService;
-
+    @Autowired
+    private CouponInfoService couponInfoService;
     @Autowired
     private ProductFeignClient productFeignClient;
 
@@ -127,5 +134,79 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
             }
         }
         return findSkuList;
+    }
+
+    @Override
+    public Map<Long, List<String>> findActivity(List<Long> skuIdList) {
+        Map<Long, List<String>> result = new HashMap<>(16);
+        //skuIdList遍历，得到每个skuId
+        skuIdList.forEach(skuId -> {
+            //根据skuId进行查询，查询sku对应活动里面规则列表
+            List<ActivityRule> activityRuleList =
+                    baseMapper.findActivityRule(skuId);
+            //数据封装，规则名称
+            if(!CollectionUtils.isEmpty(activityRuleList)) {
+                List<String> ruleList = new ArrayList<>();
+                //把规则名称处理
+                for (ActivityRule activityRule:activityRuleList) {
+                    ruleList.add(this.getRuleDesc(activityRule));
+                }
+                result.put(skuId,ruleList);
+            }
+        });
+        return result;
+    }
+
+    @Override
+    public OrderConfirmVo findCartActivityAndCoupon(List<CartInfo> cartInfoList, Long userId) {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> findActivityAndCoupon(Long skuId, Long userId) {
+        List<ActivityRule> activityRuleList = this.findActivityRuleBySkuId(skuId);
+
+        List<CouponInfo> couponInfoList =  couponInfoService.findCouponInfoList(skuId,userId);
+
+        //3 封装到map集合，返回
+        Map<String, Object> map = new HashMap<>();
+        map.put("couponInfoList",couponInfoList);
+        map.put("activityRuleList", activityRuleList);
+        return map;
+    }
+    @Override
+    public List<ActivityRule> findActivityRuleBySkuId(Long skuId) {
+        List<ActivityRule> activityRuleList = baseMapper.findActivityRule(skuId);
+        for (ActivityRule activityRule:activityRuleList) {
+            String ruleDesc = this.getRuleDesc(activityRule);
+            activityRule.setRuleDesc(ruleDesc);
+        }
+        return activityRuleList;
+    }
+
+    @Override
+    public List<CartInfoVo> findCartActivityList(List<CartInfo> cartInfoList) {
+        return null;
+    }
+
+    private String getRuleDesc(ActivityRule activityRule) {
+        ActivityType activityType = activityRule.getActivityType();
+        StringBuffer ruleDesc = new StringBuffer();
+        if (activityType == ActivityType.FULL_REDUCTION) {
+            ruleDesc
+                    .append("满")
+                    .append(activityRule.getConditionAmount())
+                    .append("元减")
+                    .append(activityRule.getBenefitAmount())
+                    .append("元");
+        } else {
+            ruleDesc
+                    .append("满")
+                    .append(activityRule.getConditionNum())
+                    .append("元打")
+                    .append(activityRule.getBenefitDiscount())
+                    .append("折");
+        }
+        return ruleDesc.toString();
     }
 }

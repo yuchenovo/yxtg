@@ -110,6 +110,16 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
         return baseMapper.selectList(wrapper);
     }
 
+    @Override
+    public List<SkuInfo> findNewPersonSkuInfoList() {
+        LambdaQueryWrapper<SkuInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SkuInfo::getIsNewPerson,1)
+                .eq(SkuInfo::getPublishStatus,1)
+                .orderByDesc(SkuInfo::getStock)
+                .last("limit 3");
+        return list(wrapper);
+    }
+
     private void saveSkuList(SkuInfoVo skuInfoVo, SkuInfo skuInfo) {
         List<SkuImage> skuImagesList = skuInfoVo.getSkuImagesList();
         if (!CollectionUtils.isEmpty(skuImagesList)){

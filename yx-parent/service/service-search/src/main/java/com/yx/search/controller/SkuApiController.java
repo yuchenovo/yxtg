@@ -4,7 +4,11 @@ package com.yx.search.controller;
 import com.yx.common.result.Result;
 import com.yx.model.search.SkuEs;
 import com.yx.search.service.SkuService;
+import com.yx.vo.search.SkuEsQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,16 +23,23 @@ public class SkuApiController {
     @Autowired
     private SkuService skuService;
 
-    //查询分类商品
-//    @GetMapping("{page}/{limit}")
-//    public Result listSku(@PathVariable Integer page,
-//                          @PathVariable Integer limit,
-//                          SkuEsQueryVo skuEsQueryVo) {
-//        //创建pageable对象，0代表第一页
-//        Pageable pageable = PageRequest.of(page-1,limit);
-//        Page<SkuEs> pageModel = skuService.search(pageable,skuEsQueryVo);
-//        return Result.ok(pageModel);
-//    }
+    /**
+     * 查询分类商品
+     *
+     * @param page         页
+     * @param limit        限制
+     * @param skuEsQueryVo SKU es query vo
+     * @return {@link Result}
+     */
+    @GetMapping("{page}/{limit}")
+    public Result listSku(@PathVariable Integer page,
+                          @PathVariable Integer limit,
+                          SkuEsQueryVo skuEsQueryVo) {
+        //创建pageable对象，0代表第一页
+        Pageable pageable = PageRequest.of(page-1,limit);
+        Page<SkuEs> pageModel = skuService.search(pageable,skuEsQueryVo);
+        return Result.ok(pageModel);
+    }
 
     /**
      * 上架
@@ -54,13 +65,22 @@ public class SkuApiController {
         return Result.ok(null);
     }
 
-    //获取爆款商品
+    /**
+     * 获取爆款商品
+     *
+     * @return {@link List}<{@link SkuEs}>
+     */
     @GetMapping("inner/findHotSkuList")
     public List<SkuEs> findHotSkuList() {
         return skuService.findHotSkuList();
     }
 
-    //更新商品热度
+    /**
+     * 更新商品热度
+     *
+     * @param skuId 编号SKU ID
+     * @return {@link Boolean}
+     */
     @GetMapping("inner/incrHotScore/{skuId}")
     public Boolean incrHotScore(@PathVariable("skuId") Long skuId) {
         skuService.incrHotScore(skuId);

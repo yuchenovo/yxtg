@@ -5,6 +5,7 @@ import com.yx.model.product.Category;
 import com.yx.model.product.SkuInfo;
 import com.yx.product.service.CategoryService;
 import com.yx.product.service.SkuInfoService;
+import com.yx.vo.product.SkuInfoVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -72,6 +73,22 @@ public class ProductInnerController {
     public List<Category> findCategoryList(@RequestBody List<Long> categoryIdList) {
         return categoryService.listByIds(categoryIdList);
     }
+
+    @GetMapping("inner/findAllCategoryList")
+    public List<Category> findAllCategoryList() {
+        return categoryService.list();
+    }
+
+    @GetMapping("inner/findNewPersonSkuInfoList")
+    public List<SkuInfo> findNewPersonSkuInfoList() {
+        return skuInfoService.findNewPersonSkuInfoList();
+    }
+
+    @GetMapping("inner/getSkuInfoVo/{skuId}")
+    public SkuInfoVo getSkuInfoVo(@PathVariable Long skuId) {
+        return skuInfoService.getSkuInfo(skuId);
+    }
+
 
 
 }

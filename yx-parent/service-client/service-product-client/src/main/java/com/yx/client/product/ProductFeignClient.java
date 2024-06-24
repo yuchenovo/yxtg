@@ -3,6 +3,7 @@ package com.yx.client.product;
 
 import com.yx.model.product.Category;
 import com.yx.model.product.SkuInfo;
+import com.yx.vo.product.SkuInfoVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,4 +39,13 @@ public interface ProductFeignClient {
 
     @PostMapping("/api/product/inner/findCategoryList")
     public List<Category> findCategoryList(@RequestBody List<Long> categoryIdList);
+
+    @GetMapping("/api/product/inner/findAllCategoryList")
+    public List<Category> findAllCategoryList();
+
+    @GetMapping("/api/product/inner/findNewPersonSkuInfoList")
+    public List<SkuInfo> findNewPersonSkuInfoList();
+
+    @GetMapping("/api/product/inner/getSkuInfoVo/{skuId}")
+    public SkuInfoVo getSkuInfoVo(@PathVariable Long skuId);
 }
