@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,5 +136,10 @@ public class CouponInfoServiceImpl extends ServiceImpl<CouponInfoMapper, CouponI
 
         return baseMapper.selectCouponInfoList(skuInfo.getId(),
                 skuInfo.getCategoryId(),userId);
+    }
+
+    @Override
+    public List<CouponInfo> findCartCouponInfo(List<CartInfo> cartInfoList, Long userId) {
+        return Collections.emptyList();
     }
 }

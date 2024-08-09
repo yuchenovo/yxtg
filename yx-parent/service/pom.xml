@@ -19,6 +19,8 @@
         <module>service-activity</module>
         <module>service-user</module>
         <module>service-home</module>
+        <module>service-cart</module>
+        <module>service-order</module>
     </modules>
     <dependencies>
         <!--依赖服务的工具类-->

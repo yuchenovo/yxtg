@@ -32,4 +32,6 @@ public interface CouponInfoService extends IService<CouponInfo> {
     void updateCouponInfoUseStatus(Long couponId, Long userId, Long orderId);
 
     List<CouponInfo> findCouponInfoList(Long skuId, Long userId);
+
+    List<CouponInfo> findCartCouponInfo(List<CartInfo> cartInfoList, Long userId);
 }

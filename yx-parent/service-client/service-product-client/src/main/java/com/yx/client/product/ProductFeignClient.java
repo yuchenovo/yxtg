@@ -4,6 +4,7 @@ package com.yx.client.product;
 import com.yx.model.product.Category;
 import com.yx.model.product.SkuInfo;
 import com.yx.vo.product.SkuInfoVo;
+import com.yx.vo.product.SkuStockLockVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,4 +49,7 @@ public interface ProductFeignClient {
 
     @GetMapping("/api/product/inner/getSkuInfoVo/{skuId}")
     public SkuInfoVo getSkuInfoVo(@PathVariable Long skuId);
+
+    @PostMapping("/api/product/inner/checkAndLock/{orderNo}")
+    Boolean checkAndLock(List<SkuStockLockVo> commonStockLockVoList, String orderNo);
 }

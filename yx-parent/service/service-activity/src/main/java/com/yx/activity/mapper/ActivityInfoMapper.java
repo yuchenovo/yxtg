@@ -3,6 +3,7 @@ package com.yx.activity.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yx.model.activity.ActivityInfo;
 import com.yx.model.activity.ActivityRule;
+import com.yx.model.activity.ActivitySku;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface ActivityInfoMapper extends BaseMapper<ActivityInfo> {
     List<Long> selectSkuIdListExist(@Param("skuIdList") List<Long> skuIdList);
 
     List<ActivityRule> findActivityRule(Long skuId);
+
+    List<ActivitySku> selectCartActivity(List<Long> skuIdList);
 }

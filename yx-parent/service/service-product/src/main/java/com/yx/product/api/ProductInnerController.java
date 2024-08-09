@@ -6,6 +6,7 @@ import com.yx.model.product.SkuInfo;
 import com.yx.product.service.CategoryService;
 import com.yx.product.service.SkuInfoService;
 import com.yx.vo.product.SkuInfoVo;
+import com.yx.vo.product.SkuStockLockVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -89,6 +90,12 @@ public class ProductInnerController {
         return skuInfoService.getSkuInfo(skuId);
     }
 
+    @ApiOperation(value = "锁定库存")
+    @PostMapping("inner/checkAndLock/{orderNo}")
+    public Boolean checkAndLock(@RequestBody List<SkuStockLockVo> skuStockLockVoList,
+                                @PathVariable String orderNo) {
+        return skuInfoService.checkAndLock(skuStockLockVoList,orderNo);
+    }
 
 
 }
